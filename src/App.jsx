@@ -5,6 +5,7 @@ import { HashRouter, Route, Routes } from "react-router-dom";
 import Dashboard from "./pages/Dashboard";
 import DetailSurat from "./pages/DetailSurat";
 import About from "./pages/About";
+import TafsirPage from "./pages/TafsirSurat";
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
                 <Route path="/dashboard" element={<Dashboard />}></Route>
                 <Route path="/surat/:id" element={<DetailSurat />}></Route>
                 <Route path="/about" element={<About />}></Route>
+                <Route path="/tafsir/:id" element={<TafsirPage />} />
               </Routes>
             </Content>
           </div>

@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import parse from "html-react-parser";
 import AudioPlayer from "../components/AudioPlayer";
 
 const DetailSurat = () => {
-  const { id } = useParams(); // Ambil parameter dari URL
+  const { id } = useParams();
   const [surat, setSurat] = useState([]);
   const [loading, setLoading] = useState(true);
   const [currentAudio, setCurrentAudio] = useState(null);
@@ -24,48 +24,67 @@ const DetailSurat = () => {
 
   useEffect(() => {
     getDetailSurat(id);
-  }, [id]); // Jalankan useEffect setiap `id` berubah
+  }, [id]);
 
   if (loading) return <p>Loading...</p>;
   if (!surat) return <p>Surat tidak ditemukan.</p>;
 
   return (
-    <>
-      <div className="vh-100 overflow-auto">
-        <h2>
-          {surat.namaLatin} ({surat.nama})
-        </h2>
-        <p>Jumlah Ayat: {surat.jumlahAyat}</p>
-        <p>Arti: {surat.arti}</p>
-        <p>Deskripsi: {parse(surat.deskripsi)}</p>
-        <div>
-          <ul className="list-group">
-            {surat.ayat.map((ayat) => (
-              <li key={ayat.nomorAyat}>
-                <div className="list-group-item d-flex justify-content-between">
-                  <span className=" align-items-center arabic-text">
-                    {ayat.teksArab}
-                  </span>
-                  <div className=" d-flex align-items-center">
-                    <span className="badge text-bg-primary rounded-sm d-flex align-items-center p-2 me-1">
-                      {ayat.nomorAyat}
-                    </span>
-                    <span>
-                      <AudioPlayer
-                        key={ayat.nomorAyat}
-                        url={ayat.audio["05"]}
-                        currentAudio={currentAudio}
-                        setCurrentAudio={setCurrentAudio}
-                      ></AudioPlayer>
-                    </span>
-                  </div>
-                </div>
-              </li>
-            ))}
-          </ul>
+    <div className="vh-100 overflow-auto p-3">
+      <h2>
+        {surat.namaLatin} ({surat.nama})
+      </h2>
+      <p>Jumlah Ayat: {surat.jumlahAyat}</p>
+      <p>Arti: {surat.arti}</p>
+      <p>Deskripsi: {parse(surat.deskripsi)}</p>
+
+      {surat.audioFull && (
+        <div className="my-3">
+          <h5>Audio Surat Full</h5>
+          <AudioPlayer
+            url={surat.audioFull["01"]}
+            currentAudio={currentAudio}
+            setCurrentAudio={setCurrentAudio}
+          />
         </div>
+      )}
+
+      <div>
+        <ul className="list-group">
+          {surat.ayat.map((ayat) => (
+            <li key={ayat.nomorAyat}>
+              <div className="list-group-item d-flex justify-content-between">
+                <span className="align-items-center arabic-text">
+                  {ayat.teksArab}
+                </span>
+                <div className="d-flex align-items-center">
+                  <span className="badge text-bg-primary rounded-sm d-flex align-items-center p-2 me-1">
+                    {ayat.nomorAyat}
+                  </span>
+                  <span>
+                    <AudioPlayer
+                      key={ayat.nomorAyat}
+                      url={ayat.audio["05"]}
+                      currentAudio={currentAudio}
+                      setCurrentAudio={setCurrentAudio}
+                    />
+                  </span>
+                </div>
+              </div>
+              <div className="mt-2">
+                <span className="text-muted">
+                  <strong>Terjemahan:</strong> {ayat.teksIndonesia}
+                </span>
+              </div>
+            </li>
+          ))}
+        </ul>
       </div>
-    </>
+
+      <Link to={`/tafsir/${id}`} className="btn btn-info mt-3">
+        Lihat Tafsir Lengkap
+      </Link>
+    </div>
   );
 };
 
